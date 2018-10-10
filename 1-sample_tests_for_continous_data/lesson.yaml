@@ -1,0 +1,125 @@
+- Class: meta
+  Course: Swirl_1_sample_tests_for_continuous_data
+  Lesson: 1-sample tests for continous data
+  Author: J. Stephen Gosnell
+  Type: Standard
+  Organization: Baruch College, City Univeristy of New York
+  Version: 2.4.3
+
+- Class: text
+  Output: Welcome to Swirl! This interface will help review some of the code we've used in class.
+
+- Class: text
+  Output: Today we'll review the methods used to analyze continuous data from one population.  In this case we are comparing the value we observed for some parameter (usually the mean) to a value we set under the null hypothesis.
+
+- Class: cmd_question
+  Output: For most of these tests we can input data as an object (like a column of a dataframe or a list we have created) or by typing it in manually in the function arguments.   We'll practice using a subset of our data on Australian athletes.  Load the data from the web-based file using sport <- read.table("http://www.statsci.org/data/oz/ais.txt", header = T)
+  CorrectAnswer: sport <- read.table("http://www.statsci.org/data/oz/ais.txt", header = T)
+  AnswerTests: omnitest(correctExpr='sport <- read.table("http://www.statsci.org/data/oz/ais.txt", header = T)')
+  Hint: Use sport <- read.table("http://www.statsci.org/data/oz/ais.txt", header = T). Note you are reading a tab delimited file so you use read.table and specify it has a header (since the default is false).
+
+- Class: text
+  Output: Good job.  Note you read a tab delimited file so you used read.table and specified it has a header (since the default is false).
+
+- Class: cmd_question
+  Output: Now let's focus on the subset of men that run the 400m dash.  Create an object called male_400m that contains this subset using male_400m <- sport[sport$Sex == "male" & sport$Sport == "T400m",]
+  CorrectAnswer: male_400m <- sport[sport$Sex == "male" & sport$Sport == "T400m",]
+  AnswerTests: omnitest(correctExpr='male_400m <- sport[sport$Sex == "male" & sport$Sport == "T400m",]')
+  Hint: Use male_400m <- sport[sport$Sex == "male" & sport$Sport == "T400m",]. Note you are making a new object from the sport dataframe that has all rows where Sex = male and Sport = T400m.
+
+- Class: text
+  Output: Great. Remember what the notation you used means.  You made a new object from the sport dataframe that has all rows where Sex = male and Sport = T400m.
+
+- Class: cmd_question
+  Output: First, let's compare the height of these players (Ht column) to see if they are different than the global average. We have lots of data on humans, so let's assume we actually know everything about the sampled population and it has an average height of 175.6 cm and a standard deviation of 7 cm. You do this using the z.test function from the BSDA package (you'll need to install the package and load it).  Then you use the function as z.test(data, mu (your null hypothesis value from a known population), sigma.x (your value under the null from a known population)). You'll need to specify the sigma.x argument or you'll get an error!
+  CorrectAnswer: z.test(x = male_400m$Ht, mu = 175.6, sigma.x = 7)
+  AnswerTests: omnitest(correctExpr='z.test(x = male_400m$Ht, mu = 175.6, sigma.x = 7)')
+  Hint: Try z.test(x = male_400m$Ht, mu = 175.6, sigma.x = 7)
+
+- Class: mult_question
+  Output: What was the p-value from the test?
+  AnswerChoices: .030; .102; 5
+  CorrectAnswer: .030
+  AnswerTests: omnitest(correctVal='.030')
+  Hint: 
+  
+- Class: mult_question
+  Output: Using the p-value, do we reject or fail to reject the null hypothesis (assume an alpha level of .05)?
+  AnswerChoices: reject; fail to reject; not sure
+  CorrectAnswer: reject
+  AnswerTests: omnitest(correctVal='reject')
+  Hint: If the p-value is less than .05 (the pre-set alpha level), we reject the null hypothesis. This means we would expect an outcome like we observed or more extreme only 1 time out of 20 (on average) if the null hypothesis were true, so it's unlikely!
+
+- Class: cmd_question
+  Output: Good job. Note you can also specify a sided-test using the alternative argument.  Let's test if the average male 400 m runner from Australia is shorter than the average Australian male.
+  CorrectAnswer: z.test(x = male_400m$Ht, mu = 175.6, sigma.x = 7, alternative = "less")
+  AnswerTests: omnitest(correctExpr='z.test(x = male_400m$Ht, mu = 175.6, sigma.x = 7, alternative = "less")')
+  Hint: Try z.test(x = male_400m$Ht, mu = 175.6, sigma.x = 7, alternative = "less").
+
+- Class: text
+  Output: Good job. Now compare the p-values from these 2-tests.  For the two-tailed test we get a significant p-value (p < .05), so we know that our population is different than the average Australian male. However, we don't get a significant p-value for the sided test asking if the average sprinter is shorter than the average male.
+
+- Class: cmd_question
+  Output: Now let's use the same data but assume we don't know the variance in the underlying population. this is a much more common scenario, and we use a t test to address.  A t-test uses the t distribution (not the normal like the Z test), which looks normal but has fatter tails.  This makes it harder to reject a null hypothesis (and leads to wider confidence intervals for estimates of magnitude!).  This should make sense as we know less about the population. Fortunately the command is almost the same. Just use t.test and don't specify sigma.x.  Use the t.test function to see if our male Aussie sprinters differ from the average Australian male height of 175.6 cm.
+  CorrectAnswer: t.test(x = male_400m$Ht, mu = 175.6)
+  AnswerTests: omnitest(correctExpr='t.test(x = male_400m$Ht, mu = 175.6)')
+  Hint: Try t.test(x = male_400m$Ht, mu = 175.6)
+
+- Class: text
+  Output: The output here is similar. Make sure you can find the p-value.  Also remember you could add an alternative argument to test a sided hypothesis.
+
+- Class: text
+  Output: Sometimes we can't (or don't want) to assume the means of the data is normal. In this case we have some other options.  
+
+- Class: cmd_question
+  Output: We can use a rank-sum test, also known as the wilcoxon test, if the data is symmetric. The function is wilcox.test, and the commands are the same as the t.test function.  Try it below. 
+  CorrectAnswer: wilcox.test(x = male_400m$Ht, mu = 175.6)
+  AnswerTests: omnitest(correctExpr='wilcox.test(x = male_400m$Ht, mu = 175.6)')
+  Hint: Try wilcox.test(x = male_400m$Ht, mu = 175.6).
+
+- Class: cmd_question
+  Output: Finally (for the frequentist tests), we can use a sign test (also known as the median test).  tihs test makes no assumptions on the data, but its actually reducing our continuous data to a binary structure (data is above or below mean) and running a binomial test on it. The function (in the BSDA package) is SIGN.test. The only difference is you specify a md (median), not mu!
+  CorrectAnswer: SIGN.test(x = male_400m$Ht, md = 175.6)
+  AnswerTests: omnitest(correctExpr='SIGN.test(x = male_400m$Ht, md = 175.6)')
+  Hint: Try SIGN.test(x = male_400m$Ht, md = 175.6).
+
+
+- Class: text
+  Output: Note these frequentists tests all differ in assumptions about the data (where its from, what it looks like). the fewer assumptions we make, the less power (ability to reject false null hypotheses) we have!
+
+- Class: cmd_question
+  Output: We also have a few non-frequentist options for testing the data.  First, we can bootstrap the data, which means we resample the data itself to make a null distribution.  To do this load the bootstrapjsg function I provided (you may need to install and require the simpleboot library too), then bootstrap the data. The function is bootstrapjsg, and it requires data1 and null arguments.  
+  CorrectAnswer: bootstrapjsg(data1=male_400m$Ht, null = 175.6)
+  AnswerTests: omnitest(correctExpr='bootstrapjsg(data1=male_400m$Ht, null = 175.6)')
+  Hint: Try bootstrapjsg(data1=male_400m$Ht, null = 175.6)!
+
+
+- Class: text
+  Output: Great job! Note the output provides a bootstrapped confidence interval and a p-value!
+
+- Class: cmd_question
+  Output: Finally, we can take a Bayesian approach to the question.  The ttestBF function (in the BayesFactor library) provides support for the null or alternative models.  Load hte package then run the function - it has the same arguments as t.test!
+  CorrectAnswer: ttestBF(x = male_400m$Ht, mu = 175.6)
+  AnswerTests: omnitest(correctExpr='ttestBF(x = male_400m$Ht, mu = 175.6)')
+  Hint: Try ttestBF(x = male_400m$Ht, mu = 175.6)
+
+
+- Class: mult_question
+  Output: Great. The output provides a Bayes Factor. What is it?
+  AnswerChoices: 2.93; 1.25; 0.52
+  CorrectAnswer: 2.93
+  AnswerTests: omnitest(correctVal='2.93')
+  Hint: Look after the colon!
+
+- Class: mult_question
+  Output: Great. A Bayes Factor of greater than 1 supports the alternative, and less than 1 supports the null. What does our output suggest?
+  AnswerChoices: support null; support alternative; not sure
+  CorrectAnswer: support alternative
+  AnswerTests: omnitest(correctVal='support alternative')
+  Hint: Is the Bayes Factor greater or less than 1?
+
+- Class: text
+  Output: Good job.  The magnitude of the Bayes Factor also indicates the strength of support (see lecture slides for a scale)
+
+- Class: text
+  Output: This concludes our review of analyzing one-sample continuous data.  Note we got similar results from all methods, but the assumptions and p-values (or lack thereof!) differ. Make sure you understand why!
