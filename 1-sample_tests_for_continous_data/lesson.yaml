@@ -88,7 +88,7 @@
   Output: Note these frequentists tests all differ in assumptions about the data (where its from, what it looks like). the fewer assumptions we make, the less power (ability to reject false null hypotheses) we have!
 
 - Class: cmd_question
-  Output: We also have a few non-frequentist options for testing the data.  First, we can bootstrap the data, which means we resample the data itself to make a null distribution.  To do this load the bootstrapjsg function I provided (you may need to install and require the simpleboot library too), then bootstrap the data. The function is bootstrapjsg, and it requires data1 and null arguments.  
+  Output: We also have a few non-frequentist options for testing the data.  First, we can bootstrap the data, which means we resample the data itself to make a null distribution.  To do this load the bootstrapjsg function I provided (you may need to install and require the boot library too), then bootstrap the data. The function is bootstrapjsg, and it requires data1 and null arguments.  
   CorrectAnswer: bootstrapjsg(data1=male_400m$Ht, null = 175.6)
   AnswerTests: omnitest(correctExpr='bootstrapjsg(data1=male_400m$Ht, null = 175.6)')
   Hint: Try bootstrapjsg(data1=male_400m$Ht, null = 175.6)!
